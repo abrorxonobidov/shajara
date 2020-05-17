@@ -10,25 +10,11 @@ return [
     'id' => 'Admin panel',
     'language' => 'uz',
     'basePath' => dirname(__DIR__),
-    'name' => 'Chust Pichoqlari',
+    'name' => 'Shajara Backend',
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [
-        'lists' => [
-            'class' => 'backend\modules\lists\Module',
-        ],
-        'products' => [
-            'class' => 'backend\modules\products\Module',
-        ],
-        'prices' => [
-            'class' => 'backend\modules\prices\Module',
-        ],
-        'orders' => [
-            'class' => 'backend\modules\orders\Orders',
-        ],
-        'transactions' => [
-            'class' => 'backend\modules\transactions\Transactions',
-        ],
+
     ],
     'components' => [
         'request' => [
