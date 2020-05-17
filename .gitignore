@@ -12,7 +12,7 @@
 Thumbs.db
 
 # composer vendor dir
-vendor
+/vendor
 
 # composer itself is not needed
 composer.phar
@@ -25,7 +25,7 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
-vagrant
-backend/web/assets
-frontend/web/uploads
-frontend/web/assets
+/vagrant
+/backend/web/assets
+/frontend/web/uploads
+/frontend/web/assets
