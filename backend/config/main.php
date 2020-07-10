@@ -7,7 +7,7 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'Admin panel',
+    'id' => 'admin_panel',
     'language' => 'uz',
     'basePath' => dirname(__DIR__),
     'name' => 'Shajara Backend',
