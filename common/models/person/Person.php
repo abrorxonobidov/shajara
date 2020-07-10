@@ -2,8 +2,9 @@
 
 namespace common\models\person;
 
+use common\models\marriage\Marriage;
+use common\models\photos\PhotosPersonLink;
 use common\models\user\User;
-use Yii;
 
 /**
  * This is the model class for table "person".
@@ -19,7 +20,7 @@ use Yii;
  * @property string $description
  * @property int $gender_id
  * @property string $address
- * @property string $citizenship
+ * @property int $citizenship_id
  * @property int $parent_marriage_id
  * @property int $education_id
  * @property string $phone
@@ -52,10 +53,10 @@ class Person extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'gender_id', 'citizenship'], 'required'],
+            [['title', 'gender_id', 'citizenship_id', 'generation_id'], 'required'],
             [['date_of_birth', 'date_of_death', 'created_at', 'updated_at'], 'safe'],
-            [['generation_id', 'gender_id', 'parent_marriage_id', 'education_id', 'creator_id', 'modifier_id'], 'integer'],
-            [['title', 'name', 'surname', 'fathers_name', 'citizenship', 'profession'], 'string', 'max' => 50],
+            [['generation_id', 'gender_id', 'parent_marriage_id', 'citizenship_id', 'education_id', 'creator_id', 'modifier_id'], 'integer'],
+            [['title', 'name', 'surname', 'fathers_name', 'profession'], 'string', 'max' => 50],
             [['description', 'address', 'phone'], 'string', 'max' => 255],
             [['parent_marriage_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marriage::class, 'targetAttribute' => ['parent_marriage_id' => 'id']],
             [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
@@ -70,21 +71,21 @@ class Person extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'name' => 'Name',
-            'surname' => 'Surname',
-            'fathers_name' => 'Fathers Name',
-            'date_of_birth' => 'Date Of Birth',
-            'date_of_death' => 'Date Of Death',
-            'generation_id' => 'Generation ID',
-            'description' => 'Description',
-            'gender_id' => 'Gender ID',
-            'address' => 'Address',
-            'citizenship' => 'Citizenship',
-            'parent_marriage_id' => 'Parent Marriage ID',
-            'education_id' => 'Education ID',
-            'phone' => 'Phone',
-            'profession' => 'Profession',
+            'title' => 'Taniqli ismi',
+            'name' => 'Ismi',
+            'surname' => 'Familiyasi',
+            'fathers_name' => 'Otasining ismi',
+            'date_of_birth' => 'Tug‘ilgan sanasi',
+            'date_of_death' => 'Vafot etgan sanasi',
+            'generation_id' => 'Nasli',
+            'description' => 'Izoh',
+            'gender_id' => 'Jinsi',
+            'address' => 'Manzili',
+            'citizenship_id' => 'Fuqaroligi',
+            'parent_marriage_id' => 'Ota-onasi',
+            'education_id' => 'Ma’lumoti',
+            'phone' => 'Telefon',
+            'profession' => 'Kasbi',
             'creator_id' => 'Creator ID',
             'modifier_id' => 'Modifier ID',
             'created_at' => 'Created At',
@@ -147,5 +148,43 @@ class Person extends \yii\db\ActiveRecord
     public static function find()
     {
         return new PersonQuery(get_called_class());
+    }
+
+    public static function getGenerationList()
+    {
+        return [
+            1 => 'Xo‘ja',
+            2 => 'Fuqaro',
+        ];
+    }
+
+
+    public static function getGenderList()
+    {
+        return [
+            1 => 'Erkak',
+            2 => 'Ayol',
+        ];
+    }
+
+    public static function getCitizenshipList()
+    {
+        return [
+            1 => 'O‘zbekiston',
+            2 => 'Tojikiston',
+        ];
+    }
+
+
+    public static function getEducationList()
+    {
+        return [
+            1 => 'Aniqlanmagan',
+            2 => 'Ma’lumotsiz (Hech qayerda o‘qimagan)',
+            3 => 'O‘rta (Maktab)',
+            4 => 'O‘rta-maxsus (Kollej, akademik litsey)',
+            5 => 'Oliy (Universitet, Institut)',
+            6 => 'Avvalgi ta’lim (Madrasa, Diniy)',
+        ];
     }
 }
