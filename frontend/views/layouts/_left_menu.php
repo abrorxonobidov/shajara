@@ -29,7 +29,7 @@ use common\widgets\Alert;
     ]);
     $menuItems = [
         ['label' => 'Shaxslar', 'url' => ['/person/index']],
-        ['label' => 'Nikohlar', 'url' => ['/marriage/about']],
+        ['label' => 'Nikohlar', 'url' => ['/marriage/index']],
         ['label' => 'Aloqa', 'url' => ['/site/contact']],
     ];
     if (Yii::$app->user->isGuest) {

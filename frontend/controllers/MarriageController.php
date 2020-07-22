@@ -2,11 +2,10 @@
 
 namespace frontend\controllers;
 
-use common\models\marriage\Marriage;
-use Yii;
 use common\models\person\Person;
-use common\models\person\PersonSearch;
-use yii\filters\AjaxFilter;
+use Yii;
+use common\models\marriage\Marriage;
+use common\models\marriage\MarriageSearch;
 use yii\filters\ContentNegotiator;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -15,9 +14,9 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * PersonController implements the CRUD actions for Person model.
+ * MarriageController implements the CRUD actions for Marriage model.
  */
-class PersonController extends Controller
+class MarriageController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -25,33 +24,36 @@ class PersonController extends Controller
     public function behaviors()
     {
         $behaviour = parent::behaviors();
+
         $behaviour['verbs'] = [
             'class' => VerbFilter::class,
             'actions' => [
                 'delete' => ['POST'],
             ]
         ];
-        //$behaviour[] = [
-        //    'class' => AjaxFilter::class,
-        //    'only' => ['get-marriage'],
-        //    'errorMessage' => 'Sahifa topilmadi'
-        //];
 
         $behaviour[] = [
             'class' => ContentNegotiator::class,
-            'only' => ['get-marriage'],  // in a controller
+            'only' => ['get-person'],  // in a controller
             'formats' => ['application/json' => Response::FORMAT_JSON]
         ];
+
+        //$behaviour[] = [
+        //    'class' => AjaxFilter::class,
+        //    'only' => ['get-person'],
+        //    'errorMessage' => 'Sahifa topilmadi'
+        //];
+
         return $behaviour;
     }
 
     /**
-     * Lists all Person models.
+     * Lists all Marriage models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new PersonSearch();
+        $searchModel = new MarriageSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -61,7 +63,7 @@ class PersonController extends Controller
     }
 
     /**
-     * Displays a single Person model.
+     * Displays a single Marriage model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -74,13 +76,14 @@ class PersonController extends Controller
     }
 
     /**
-     * Creates a new Person model.
+     * Creates a new Marriage model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Person();
+        $model = new Marriage();
+        $model->loadDefaultValues();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -92,7 +95,7 @@ class PersonController extends Controller
     }
 
     /**
-     * Updates an existing Person model.
+     * Updates an existing Marriage model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -112,15 +115,13 @@ class PersonController extends Controller
     }
 
     /**
-     * Deletes an existing Person model.
+     * Deletes an existing Marriage model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param $id
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException | mixed if the model cannot be found
      */
-    public function actionDelete($id) //todo make is_deleted = true
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
@@ -128,15 +129,15 @@ class PersonController extends Controller
     }
 
     /**
-     * Finds the Person model based on its primary key value.
+     * Finds the Marriage model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Person the loaded model
+     * @return Marriage the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Person::findOne($id)) !== null) {
+        if (($model = Marriage::findOne($id)) !== null) {
             return $model;
         }
 
@@ -144,30 +145,26 @@ class PersonController extends Controller
     }
 
     /**
-     * @param $text
+     * @param string $text
+     * @param integer $gender_id
      * @return mixed
      */
-    public function actionGetMarriage($text)
+    public function actionGetPerson($text, $gender_id = 1)
     {
         if ($text === false) return Json::encode(['results' => ['id' => '', 'text' => '']]);
-        $authorities = Marriage::find()
+
+        $authorities = Person::find()
             ->select([
-                'm.id',
-                'text' => "CONCAT(h.surname, ' ', h.name, ' ', h.fathers_name, ' (', h.title, ')', ' - ', w.surname, ' ', w.name, ' ', w.fathers_name, ' (', w.title, ')')"
+                'id',
+                'text' => "CONCAT(surname, ' ', name, ' ', fathers_name, ' (', title, ')')"
             ])
-            ->alias('m')
-            ->leftJoin(['h' => Person::tableName()], 'h.id = m.husband_id')
-            ->leftJoin(['w' => Person::tableName()], 'w.id = m.wife_id')
             ->where(['OR',
-                ['like', 'h.title', $text],
-                ['like', 'h.name', $text],
-                ['like', 'h.surname', $text],
-                ['like', 'h.fathers_name', $text],
-                ['like', 'w.title', $text],
-                ['like', 'w.name', $text],
-                ['like', 'w.surname', $text],
-                ['like', 'w.fathers_name', $text],
+                ['like', 'title', $text],
+                ['like', 'name', $text],
+                ['like', 'surname', $text],
+                ['like', 'fathers_name', $text]
             ])
+            ->andWhere(['gender_id' => $gender_id])
             ->asArray()
             ->all();
         return ['results' => $authorities];

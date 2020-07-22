@@ -3,15 +3,17 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\person\Person */
+/**
+ * @var $this yii\web\View
+ * @var $model common\models\marriage\Marriage
+ */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Shaxslar', 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Nikohlar', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="person-view">
+<div class="marriage-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,21 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'title',
-            'name',
-            'surname',
-            'fathers_name',
-            'date_of_birth',
-            'date_of_death',
-            'generation',
+            'husband.fullIdentity',
+            'wife.fullIdentity',
+            'date_of_marriage',
+            'date_of_divorce',
+            'order_husband',
+            'order_wife',
             'description',
-            'gender',
-            'address',
-            'citizenship',
-            'parentMarriage.fullIdentity',
-            'education',
-            'phone',
-            'profession',
+            'status',
             'creator.nameAndSurname',
             'created_at',
             'modifier.nameAndSurname',

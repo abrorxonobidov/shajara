@@ -10,7 +10,7 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'name' => 'Shajara Frontend',
+    'name' => 'Shajara',
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
@@ -39,14 +39,13 @@ return [
         ],
         'urlManager' => [
             'class' => 'codemix\localeurls\UrlManager',
-            //'languages' => ['ru', 'en', 'uz'],
+            'languages' => ['uz'],
             //'enableDefaultLanguageUrlCode' => true,
             //'enableLanguagePersistence' => false,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             //'enableLanguageDetection' => false,
             'rules' => [
-                'site/index' => 'person/index',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
@@ -54,7 +53,7 @@ return [
                 '<module>/<controller>/<action>' => '<module>/<controller>/<action>',
             ],
         ],
-        /*'i18n' => [
+        'i18n' => [
             'translations' => [
                 'main*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
@@ -64,16 +63,8 @@ return [
                         'main' => 'main.php',
                     ],
                 ],
-                'yii*' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    'basePath' => '@common/messages',
-                    'sourceLanguage' => 'uz',
-                    'fileMap' => [
-                        'yii' => 'yii.php',
-                    ],
-                ]
             ],
-        ],*/
+        ],
     ],
     'language' => 'uz',
     //'sourceLanguage' => 'uz',

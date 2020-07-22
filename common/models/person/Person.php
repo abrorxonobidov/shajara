@@ -2,7 +2,7 @@
 
 namespace common\models\person;
 
-use common\components\behaviours\TimestampBehavior;
+use common\models\base\LocalActiveRecord;
 use common\models\marriage\Marriage;
 use common\models\photos\PhotosPersonLink;
 use common\models\user\User;
@@ -31,6 +31,8 @@ use common\models\user\User;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property string $fullIdentity
+ *
  * @property Marriage[] $marriages
  * @property Marriage[] $marriages0
  * @property Marriage $parentMarriage
@@ -38,18 +40,11 @@ use common\models\user\User;
  * @property User $modifier
  * @property PhotosPersonLink[] $photosPersonLinks
  */
-class Person extends \yii\db\ActiveRecord
+class Person extends LocalActiveRecord
 {
 
-    public function behaviors()
-    {
-        $b = parent::behaviors();
-        $b[] = [
-            'class' => TimestampBehavior::class,
-            'timestamp' => true
-        ];
-        return $b;
-    }
+    const GENDER_MALE = 1;
+    const GENDER_FEMALE = 2;
 
     /**
      * {@inheritdoc}
@@ -89,16 +84,16 @@ class Person extends \yii\db\ActiveRecord
             'fathers_name' => 'Otasining ismi',
             'date_of_birth' => 'Tug‘ilgan sanasi',
             'date_of_death' => 'Vafot etgan sanasi',
-            'generation_id' => 'Nasli ID',
+            'generation_id' => 'Nasli',
             'generation' => 'Nasli',
             'description' => 'Izoh',
-            'gender_id' => 'Jinsi ID',
+            'gender_id' => 'Jinsi',
             'gender' => 'Jinsi',
             'address' => 'Manzili',
-            'citizenship_id' => 'Fuqaroligi ID',
+            'citizenship_id' => 'Fuqaroligi',
             'citizenship' => 'Fuqaroligi',
             'parent_marriage_id' => 'Ota-onasi',
-            'education_id' => 'Ma’lumoti ID',
+            'education_id' => 'Ma’lumoti',
             'education' => 'Ma’lumoti',
             'phone' => 'Telefon',
             'profession' => 'Kasbi',
@@ -117,15 +112,8 @@ class Person extends \yii\db\ActiveRecord
      */
     public function getMarriages()
     {
-        return $this->hasMany(Marriage::class, ['husband_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMarriages0()
-    {
-        return $this->hasMany(Marriage::class, ['wife_id' => 'id']);
+        $target = $this->gender_id == self::GENDER_MALE ? 'husband_id' : 'wife_id';
+        return $this->hasMany(Marriage::class, [$target => 'id']);
     }
 
     /**
@@ -223,6 +211,17 @@ class Person extends \yii\db\ActiveRecord
     public function getEducation()
     {
         return self::getEducationList()[$this->education_id];
+    }
+
+
+    public function getFullIdentity()
+    {
+        $data = [
+            $this->surname,
+            $this->name,
+            $this->fathers_name,
+        ];
+        return implode(' ', $data) . " ({$this->title})";
     }
 
 }

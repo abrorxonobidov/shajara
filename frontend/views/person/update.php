@@ -2,13 +2,15 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\person\Person */
+/**
+ * @var $this yii\web\View
+ * @var $model common\models\person\Person
+ */
 
-$this->title = 'Update Person: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'People', 'url' => ['index']];
+$this->title = 'Shaxsni tahrirlash: ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Shaxslar', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Tahrirlash';
 ?>
 <div class="person-update">
 

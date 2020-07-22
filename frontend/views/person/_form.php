@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 use yii\web\JsExpression;
+use kartik\select2\Select2;
 
 /**
  * @var $this yii\web\View
@@ -51,7 +52,8 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'citizenship_id')->dropDownList($model::getCitizenshipList()) ?>
 
     <?= $form->field($model, 'parent_marriage_id')
-        ->widget(\kartik\select2\Select2::class, [
+        ->widget(Select2::class, [
+            'initValueText' => empty($model->parent_marriage_id) ? '' : $model->parentMarriage->fullIdentity,
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 3,
@@ -65,7 +67,7 @@ use yii\web\JsExpression;
                 ],
                 'escapeMarkup' => new JsExpression('(markup) => { return markup; }'),
                 'templateResult' => new JsExpression('(marriage) => { return marriage.text; }'),
-                'templateSelection' => new JsExpression('(marriage) => { return (marriage.text.length > 30) ? marriage.text.substring(0, 30) + " ..." : marriage.text ; }'),
+                'templateSelection' => new JsExpression('(marriage) => { return marriage.text;}'),
             ]
         ])
     ?>
@@ -79,7 +81,7 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'description')->textarea(['maxlength' => true, 'rows' => 6, 'placeholder' => 'Eng muhim ma’lumotlarni qisqa shaklda qoldiring ...']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Saqlash', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

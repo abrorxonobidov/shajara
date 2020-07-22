@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\grid\GridView;
 
 /**
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(\yii\bootstrap\Html::icon('plus'), ['create'], ['class' => 'btn btn-success', 'title' => 'Shaxs kiritish']) ?>
+        <?= Html::a(Html::icon('plus'), ['create'], ['class' => 'btn btn-success', 'title' => 'Shaxs kiritish']) ?>
     </p>
 
     <?= GridView::widget([

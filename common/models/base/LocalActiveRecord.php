@@ -8,6 +8,7 @@
 
 namespace common\models\base;
 
+use common\components\behaviours\TimestampBehavior;
 use common\components\DebugHelper;
 use Yii;
 use yii\db\ActiveQuery;
@@ -26,6 +27,16 @@ class LocalActiveRecord extends ActiveRecord
 {
 
     public $helpImage;
+
+    public function behaviors()
+    {
+        $b = parent::behaviors();
+        $b[] = [
+            'class' => TimestampBehavior::class,
+            'timestamp' => true
+        ];
+        return $b;
+    }
 
     public function afterSave($insert, $changedAttributes)
     {
@@ -46,40 +57,38 @@ class LocalActiveRecord extends ActiveRecord
         $log = new Logs();
         $log->user_id = Yii::$app->user->id;
         $log->action_id = $action_id;
-        $log->date = date('Y-m-d H:i:s');
         $log->row_id = $this->id;
         $log->table = $this::tableName();
-        if (!$log->save()) {
+        if (!$log->save())
             DebugHelper::printSingleObject($log->errors, 0);
-        };
     }
 
 
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('main', 'ID'),
-            'statusIconAndTitle' => Yii::t('main', 'Holati'),
-            'statusIcon' => Yii::t('main', 'Holati'),
-            'category' => Yii::t('main', 'Kategoriya'),
-            'category_id' => Yii::t('main', 'Kategoriya') . ' ID',
-            'order' => Yii::t('main', 'Tartibi'),
-            'title' => Yii::t('main', 'Nomi'),
-            'title_uz' => Yii::t('main', 'Nomi') . ' uz',
-            'title_ru' => Yii::t('main', 'Nomi') . ' ru',
-            'title_en' => Yii::t('main', 'Nomi') . ' en',
-            'titleLang' => Yii::t('main', 'Nomi'),
-            'description' => Yii::t('main', 'Batafsil'),
-            'description_uz' => Yii::t('main', 'Izoh') . ' uz',
-            'description_ru' => Yii::t('main', 'Izoh') . ' ru',
-            'description_en' => Yii::t('main', 'Izoh') . ' en',
-            'status' => Yii::t('main', 'Holati'),
-            'image' => Yii::t('main', 'Rasm'),
-            'helpImage' => Yii::t('main', 'Rasm'),
-            'created.date' => Yii::t('main', 'Yaratilgan sana'),
-            'created.user.nameAndSurname' => Yii::t('main', 'Yaratuvchi'),
-            'updated.date' => Yii::t('main', 'Tahrirlangan sana'),
-            'updated.user.nameAndSurname' => Yii::t('main', 'Tahrirlovchi'),
+            'id' =>  'ID',
+            'statusIconAndTitle' =>  'Holati',
+            'statusIcon' =>  'Holati',
+            'category' =>  'Kategoriya',
+            'category_id' =>  'Kategoriya ID',
+            'order' =>  'Tartibi',
+            'title' =>  'Nomi',
+            'titleLang' =>  'Nomi',
+            'description' =>  'Batafsil',
+            'status' =>  'Holati',
+            'image' =>  'Rasm',
+            'helpImage' =>  'Rasm',
+            'created.date' =>  'Yaratilgan sana',
+            'created.user.nameAndSurname' =>  'Yaratuvchi',
+            'updated.date' =>  'Tahrirlangan sana',
+            'updated.user.nameAndSurname' =>  'Tahrirlovchi',
+            'creator_id' => 'Yaratuvchi ID',
+            'modifier_id' => 'Tahrirlovchi ID',
+            'created_at' => 'Yaratilgan sana',
+            'updated_at' => 'Tahrirlangan sana',
+            'creator.nameAndSurname' => 'Yaratuvchi',
+            'modifier.nameAndSurname' => 'Tahrirlovchi',
         ];
     }
 

@@ -2,19 +2,16 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = 'Bosh sahifa';
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
         <h1>Congratulations!</h1>
-        <?=Yii::t('main', 'Xush kelibsiz')?>
         <p class="lead">
-            <?=Yii::$app->timeZone?><br>
-            <?=date('d.m.Y H:i:s')?>
             You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <p>
+        <a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
     </div>
 
     <div class="body-content">
