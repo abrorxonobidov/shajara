@@ -39,13 +39,14 @@ return [
         ],
         'urlManager' => [
             'class' => 'codemix\localeurls\UrlManager',
-            'languages' => ['ru', 'en', 'uz'],
-            'enableDefaultLanguageUrlCode' => true,
-            'enableLanguagePersistence' => false,
+            //'languages' => ['ru', 'en', 'uz'],
+            //'enableDefaultLanguageUrlCode' => true,
+            //'enableLanguagePersistence' => false,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableLanguageDetection' => false,
+            //'enableLanguageDetection' => false,
             'rules' => [
+                'site/index' => 'person/index',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
@@ -53,7 +54,7 @@ return [
                 '<module>/<controller>/<action>' => '<module>/<controller>/<action>',
             ],
         ],
-        'i18n' => [
+        /*'i18n' => [
             'translations' => [
                 'main*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
@@ -72,9 +73,9 @@ return [
                     ],
                 ]
             ],
-        ],
+        ],*/
     ],
     'language' => 'uz',
-    'sourceLanguage' => 'uz',
+    //'sourceLanguage' => 'uz',
     'params' => $params,
 ];

@@ -2,6 +2,7 @@
 
 namespace common\models\person;
 
+use common\components\behaviours\TimestampBehavior;
 use common\models\marriage\Marriage;
 use common\models\photos\PhotosPersonLink;
 use common\models\user\User;
@@ -39,6 +40,17 @@ use common\models\user\User;
  */
 class Person extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        $b = parent::behaviors();
+        $b[] = [
+            'class' => TimestampBehavior::class,
+            'timestamp' => true
+        ];
+        return $b;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -77,19 +89,26 @@ class Person extends \yii\db\ActiveRecord
             'fathers_name' => 'Otasining ismi',
             'date_of_birth' => 'Tug‘ilgan sanasi',
             'date_of_death' => 'Vafot etgan sanasi',
-            'generation_id' => 'Nasli',
+            'generation_id' => 'Nasli ID',
+            'generation' => 'Nasli',
             'description' => 'Izoh',
-            'gender_id' => 'Jinsi',
+            'gender_id' => 'Jinsi ID',
+            'gender' => 'Jinsi',
             'address' => 'Manzili',
-            'citizenship_id' => 'Fuqaroligi',
+            'citizenship_id' => 'Fuqaroligi ID',
+            'citizenship' => 'Fuqaroligi',
             'parent_marriage_id' => 'Ota-onasi',
-            'education_id' => 'Ma’lumoti',
+            'education_id' => 'Ma’lumoti ID',
+            'education' => 'Ma’lumoti',
             'phone' => 'Telefon',
             'profession' => 'Kasbi',
-            'creator_id' => 'Creator ID',
-            'modifier_id' => 'Modifier ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'creator_id' => 'Yaratuvchi ID',
+            'modifier_id' => 'Tahrirlovchi ID',
+            'created_at' => 'Yaratilgan sana',
+            'updated_at' => 'Tahrirlangan sana',
+            'creator.nameAndSurname' => 'Yaratuvchi',
+            'modifier.nameAndSurname' => 'Tahrirlovchi',
+
         ];
     }
 
@@ -158,6 +177,10 @@ class Person extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getGeneration()
+    {
+        return self::getGenerationList()[$this->generation_id];
+    }
 
     public static function getGenderList()
     {
@@ -165,6 +188,11 @@ class Person extends \yii\db\ActiveRecord
             1 => 'Erkak',
             2 => 'Ayol',
         ];
+    }
+
+    public function getGender()
+    {
+        return self::getCitizenshipList()[$this->gender_id];
     }
 
     public static function getCitizenshipList()
@@ -175,6 +203,10 @@ class Person extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getCitizenship()
+    {
+        return self::getCitizenshipList()[$this->citizenship_id];
+    }
 
     public static function getEducationList()
     {
@@ -187,4 +219,10 @@ class Person extends \yii\db\ActiveRecord
             6 => 'Avvalgi ta’lim (Madrasa, Diniy)',
         ];
     }
+
+    public function getEducation()
+    {
+        return self::getEducationList()[$this->education_id];
+    }
+
 }

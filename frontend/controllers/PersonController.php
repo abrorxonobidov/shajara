@@ -2,12 +2,17 @@
 
 namespace frontend\controllers;
 
+use common\models\marriage\Marriage;
 use Yii;
 use common\models\person\Person;
 use common\models\person\PersonSearch;
+use yii\filters\AjaxFilter;
+use yii\filters\ContentNegotiator;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * PersonController implements the CRUD actions for Person model.
@@ -19,14 +24,25 @@ class PersonController extends Controller
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+        $behaviour = parent::behaviors();
+        $behaviour['verbs'] = [
+            'class' => VerbFilter::class,
+            'actions' => [
+                'delete' => ['POST'],
+            ]
         ];
+        //$behaviour[] = [
+        //    'class' => AjaxFilter::class,
+        //    'only' => ['get-marriage'],
+        //    'errorMessage' => 'Sahifa topilmadi'
+        //];
+
+        $behaviour[] = [
+            'class' => ContentNegotiator::class,
+            'only' => ['get-marriage'],  // in a controller
+            'formats' => ['application/json' => Response::FORMAT_JSON]
+        ];
+        return $behaviour;
     }
 
     /**
@@ -98,11 +114,13 @@ class PersonController extends Controller
     /**
      * Deletes an existing Person model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete($id) //todo make is_deleted = true
     {
         $this->findModel($id)->delete();
 
@@ -123,5 +141,35 @@ class PersonController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @param $text
+     * @return mixed
+     */
+    public function actionGetMarriage($text)
+    {
+        if ($text === false) return Json::encode(['results' => ['id' => '', 'text' => '']]);
+        $authorities = Marriage::find()
+            ->select([
+                'm.id',
+                'text' => "CONCAT(h.title, ' - ', w.title)"
+            ])
+            ->alias('m')
+            ->leftJoin(['h' => Person::tableName()], 'h.id = m.husband_id')
+            ->leftJoin(['w' => Person::tableName()], 'w.id = m.wife_id')
+            ->where(['OR',
+                ['like', 'h.title', $text],
+                ['like', 'h.name', $text],
+                ['like', 'h.surname', $text],
+                ['like', 'h.fathers_name', $text],
+                ['like', 'w.title', $text],
+                ['like', 'w.name', $text],
+                ['like', 'w.surname', $text],
+                ['like', 'w.fathers_name', $text],
+            ])
+            ->asArray()
+            ->all();
+        return ['results' => $authorities];
     }
 }

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
+use yii\web\JsExpression;
 
 /**
  * @var $this yii\web\View
@@ -49,7 +50,25 @@ use kartik\date\DatePicker;
 
     <?= $form->field($model, 'citizenship_id')->dropDownList($model::getCitizenshipList()) ?>
 
-    <?= $form->field($model, 'parent_marriage_id')->textInput() ?>
+    <?= $form->field($model, 'parent_marriage_id')
+        ->widget(\kartik\select2\Select2::class, [
+            'pluginOptions' => [
+                'allowClear' => true,
+                'minimumInputLength' => 3,
+                'language' => [
+                    'errorLoading' => new JsExpression("() => { return 'Yuklanmoqda...'; }"),
+                ],
+                'ajax' => [
+                    'url' => 'get-marriage',
+                    'dataType' => 'json',
+                    'data' => new JsExpression('(params) => { return {text:params.term, id:null}; }')
+                ],
+                'escapeMarkup' => new JsExpression('(markup) => { return markup; }'),
+                'templateResult' => new JsExpression('(marriage) => { return marriage.text; }'),
+                'templateSelection' => new JsExpression('(marriage) => { return (marriage.text.length > 30) ? marriage.text.substring(0, 30) + " ..." : marriage.text ; }'),
+            ]
+        ])
+    ?>
 
     <?= $form->field($model, 'education_id')->dropDownList($model::getEducationList(), ['prompt' => 'Ma’lumotini tanlang']) ?>
 
