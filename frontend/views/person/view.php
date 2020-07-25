@@ -1,10 +1,13 @@
 <?php
 
-use yii\helpers\Html;
+use common\components\HtmlHelper;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\person\Person */
+
+/**
+ * @var $this yii\web\View
+ * @var $model common\models\person\Person
+ */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Shaxslar', 'url' => ['index']];
@@ -13,43 +16,45 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="person-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= HtmlHelper::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Tahrirlash', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('O‘chirish', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Siz rostdan ham ushbu elementni o‘chirmoqchimisiz?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="row">
+        <div class="col-md-12">
+            <?= \frontend\widgets\MarriagesGridWidget::widget(['person' => $model])?>
+        </div>
+        <div class="col-md-6">
+            <?= HtmlHelper::img('/images/no_photo.png', ['class' => 'img img-thumbnail']) ?>
+            <p class="text-right">
+                <?= HtmlHelper::editButton($model) ?>
+                <?= HtmlHelper::removeButton($model) ?>
+            </p>
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'id',
+                    'title',
+                    'name',
+                    'surname',
+                    'fathers_name',
+                    'date_of_birth',
+                    'date_of_death',
+                    'generation',
+                    'description',
+                    'gender',
+                    'address',
+                    'citizenship',
+                    'parentMarriage.fullIdentity',
+                    'education',
+                    'phone',
+                    'profession',
+                    'creator.nameAndSurname',
+                    'created_at',
+                    'modifier.nameAndSurname',
+                    'updated_at',
+                ],
+            ]) ?>
+        </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'title',
-            'name',
-            'surname',
-            'fathers_name',
-            'date_of_birth',
-            'date_of_death',
-            'generation',
-            'description',
-            'gender',
-            'address',
-            'citizenship',
-            'parentMarriage.fullIdentity',
-            'education',
-            'phone',
-            'profession',
-            'creator.nameAndSurname',
-            'created_at',
-            'modifier.nameAndSurname',
-            'updated_at',
-        ],
-    ]) ?>
+    </div>
 
 </div>

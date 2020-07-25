@@ -34,7 +34,6 @@ use common\models\user\User;
  * @property string $fullIdentity
  *
  * @property Marriage[] $marriages
- * @property Marriage[] $marriages0
  * @property Marriage $parentMarriage
  * @property User $creator
  * @property User $modifier
@@ -76,7 +75,7 @@ class Person extends LocalActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return array_merge(parent::attributeLabels(), [
             'id' => 'ID',
             'title' => 'Taniqli ismi',
             'name' => 'Ismi',
@@ -103,8 +102,7 @@ class Person extends LocalActiveRecord
             'updated_at' => 'Tahrirlangan sana',
             'creator.nameAndSurname' => 'Yaratuvchi',
             'modifier.nameAndSurname' => 'Tahrirlovchi',
-
-        ];
+        ]);
     }
 
     /**
@@ -180,7 +178,7 @@ class Person extends LocalActiveRecord
 
     public function getGender()
     {
-        return self::getCitizenshipList()[$this->gender_id];
+        return self::getGenderList()[$this->gender_id];
     }
 
     public static function getCitizenshipList()

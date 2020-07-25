@@ -89,6 +89,7 @@ class LocalActiveRecord extends ActiveRecord
             'updated_at' => 'Tahrirlangan sana',
             'creator.nameAndSurname' => 'Yaratuvchi',
             'modifier.nameAndSurname' => 'Tahrirlovchi',
+            'fullIdentity' => 'F.I.Sh',
         ];
     }
 

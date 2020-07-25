@@ -23,7 +23,7 @@
         "kartik-v/yii2-widgets": "*",
         "2amigos/yii2-tinymce-widget": "~1.1",
         "ext-json": "*",
-        "ext-apache": "*"
+        "kartik-v/yii2-grid": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

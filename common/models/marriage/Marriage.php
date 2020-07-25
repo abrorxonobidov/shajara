@@ -29,7 +29,7 @@ use common\models\user\User;
  * @property Person $wife
  * @property User $creator
  * @property User $modifier
- * @property Person[] $people
+ * @property Person[] $children
  */
 class Marriage extends LocalActiveRecord
 {
@@ -64,8 +64,7 @@ class Marriage extends LocalActiveRecord
      */
     public function attributeLabels()
     {
-        $a = parent::attributeLabels();
-        return array_merge($a,
+        return array_merge(parent::attributeLabels(),
             [
                 'id' => 'ID',
                 'husband_id' => 'Er',
@@ -73,7 +72,7 @@ class Marriage extends LocalActiveRecord
                 'wife_id' => 'Xotin',
                 'wife.fullIdentity' => 'Xotin',
                 'date_of_marriage' => 'Nikohlangan sana',
-                'date_of_divorce' => 'Ajrashgan sana (Agar ajrashgan bo‘lsa)',
+                'date_of_divorce' => 'Ajrashgan sana',
                 'order_husband' => 'Erning nikohi tartibi',
                 'order_wife' => 'Xotinning nikohi tartibi',
                 'description' => 'Izoh',
@@ -117,7 +116,7 @@ class Marriage extends LocalActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPeople()
+    public function getChildren()
     {
         return $this->hasMany(Person::class, ['parent_marriage_id' => 'id']);
     }
