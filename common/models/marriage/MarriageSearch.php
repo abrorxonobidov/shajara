@@ -24,8 +24,8 @@ class MarriageSearch extends Marriage
     public function rules()
     {
         return [
-            [['id', 'husband_id', 'wife_id', 'order_husband', 'order_wife', 'status_id', 'creator_id', 'modifier_id', 'identity_search_id'], 'integer'],
-            [['date_of_marriage', 'date_of_divorce', 'description', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'status_id', 'identity_search_id'], 'integer'],
+            [['date_of_marriage', 'date_of_divorce', 'description'], 'safe'],
         ];
     }
 
@@ -39,53 +39,59 @@ class MarriageSearch extends Marriage
      */
     public function search($params)
     {
-        $query = Marriage::find();
-
-        // add conditions that should always apply here
+        $query = Marriage::find()
+            ->alias('m')
+            ->leftJoin(['h' => Person::tableName()], 'h.id = m.husband_id')
+            ->leftJoin(['w' => Person::tableName()], 'w.id = m.wife_id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC
+                'defaultOrder' => ['id' => SORT_DESC],
+                'attributes' => [
+                    'id',
+                    'date_of_marriage',
+                    'date_of_divorce',
+                    'status_id',
+                    'description',
+                    'identity_search_id' => [
+                        'asc' => ['h.surname' => SORT_ASC, 'h.name' => SORT_ASC, 'h.fathers_name' => SORT_ASC, 'h.title' => SORT_ASC, 'w.surname' => SORT_ASC, 'w.name' => SORT_ASC, 'w.fathers_name' => SORT_ASC, 'w.title' => SORT_ASC],
+                        'desc' => ['h.surname' => SORT_DESC, 'h.name' => SORT_DESC, 'h.fathers_name' => SORT_DESC, 'h.title' => SORT_DESC, 'w.surname' => SORT_DESC, 'w.name' => SORT_DESC, 'w.fathers_name' => SORT_DESC, 'w.title' => SORT_DESC],
+                    ],
                 ]
             ]
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
+        if (!$this->validate()) return $dataProvider;
 
-        // grid filtering conditions
         $query
             ->andFilterWhere([
-                'id' => $this->id,
-                'husband_id' => $this->husband_id,
-                'wife_id' => $this->wife_id,
-                'date_of_marriage' => $this->date_of_marriage,
-                'date_of_divorce' => $this->date_of_divorce,
-                'order_husband' => $this->order_husband,
-                'order_wife' => $this->order_wife,
-                'status_id' => $this->status_id,
-                'creator_id' => $this->creator_id,
-                'modifier_id' => $this->modifier_id,
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at,
+                'm.id' => $this->id,
+                'm.status_id' => $this->status_id,
             ])
             ->andFilterWhere([
                 'or',
-                ['husband_id' => $this->identity_search_id],
-                ['wife_id' => $this->identity_search_id],
-            ]);
+                ['m.husband_id' => $this->identity_search_id],
+                ['m.wife_id' => $this->identity_search_id],
+            ])
+            ->andFilterWhere(['like', 'm.description', $this->description]);
 
-        $query->andFilterWhere(['like', 'description', $this->description]);
+        if ($this->date_of_marriage)
+            $query
+                ->andFilterWhere(['>=', 'm.date_of_marriage', date("Y-m-d", strtotime(substr($this->date_of_marriage, 0, 10)))])
+                ->andFilterWhere(['<', 'm.date_of_marriage', date("Y-m-d", strtotime(substr($this->date_of_marriage, 13, 10) . ' + 1 day'))]);
+
+        if ($this->date_of_divorce)
+            $query
+                ->andFilterWhere(['>=', 'm.date_of_divorce', date("Y-m-d", strtotime(substr($this->date_of_divorce, 0, 10)))])
+                ->andFilterWhere(['<', 'm.date_of_divorce', date("Y-m-d", strtotime(substr($this->date_of_divorce, 13, 10) . ' + 1 day'))]);
+
 
         return $dataProvider;
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -94,4 +100,6 @@ class MarriageSearch extends Marriage
     {
         return $this->hasOne(Person::class, ['id' => 'identity_search_id']);
     }
+
+
 }

@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
+use kartik\daterange\DateRangePicker;
 
 /**
  * @var $this yii\web\View
@@ -27,15 +28,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <? Pjax::begin(); ?>
 
     <?= GridView::widget([
+        'id' => 'marriage-grid-view',
+        'summary' => '<p class="text-right"> {begin} - {end} / {totalCount}</p>',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            //['class' => 'yii\grid\SerialColumn'],
-
             'id',
             [
                 'attribute' => 'identity_search_id',
-                'value' => 'fullIdentity',
+                'value' => function ($model) {
+                    /** @var $model \common\models\marriage\Marriage*/
+                    return str_replace('-', '- <br>', $model->fullIdentity);
+                },
                 'label' => 'Er va xotin',
                 'filter' => Select2::widget([
                     'model' => $searchModel,
@@ -59,35 +63,54 @@ $this->params['breadcrumbs'][] = $this->title;
                         'templateResult' => new JsExpression('(marriage) => { return marriage.text; }'),
                         'templateSelection' => new JsExpression('(marriage) => { return (marriage.text.length > 50) ? marriage.text.substring(0, 50) + " ..." : marriage.text ; }'),
                     ]
-                ])
+                ]),
+                'contentOptions' => [
+                    'class' => 'col-md-4',
+                ],
+                'format' => 'raw'
             ],
-            //'husband.fullIdentity',
-            //'wife.fullIdentity',
-            'date_of_marriage',
-            'date_of_divorce',
-            //'order_husband',
-            //'order_wife',
-            //'description',
+            [
+                'attribute' => 'date_of_marriage',
+                'filter' => DateRangePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'date_of_marriage',
+                    'convertFormat' => true,
+                    'pluginEvents' => [
+                        'cancel.daterangepicker' => "function(ev, picker) {\$('#marriagesearch-date_of_marriage').val(''); $('#marriage-grid-view').yiiGridView('applyFilter');}",
+                    ],
+                    'pluginOptions' => [
+                        'locale' => ['format' => 'Y-m-d'],
+                        'allowClear' => true
+                    ],
+                ]),
+            ],
+            [
+                'attribute' => 'date_of_divorce',
+                'filter' => DateRangePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'date_of_divorce',
+                    'convertFormat' => true,
+                    'pluginEvents' => [
+                        'cancel.daterangepicker' => "function(ev, picker) {\$('#marriagesearch-date_of_divorce').val(''); $('#marriage-grid-view').yiiGridView('applyFilter');}",
+                    ],
+                    'pluginOptions' => [
+                        'locale' => ['format' => 'Y-m-d'],
+                        'allowClear' => true
+                    ],
+                ]),
+            ],
             [
                 'attribute' => 'status_id',
                 'filter' => Select2::widget([
                     'model' => $searchModel,
                     'attribute' => 'status_id',
                     'data' => $searchModel::getStatusList(),
-                    'options' => [
-                        'prompt' => 'Statusni tanlang'
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ]
+                    'options' => ['prompt' => 'Statusni tanlang'],
+                    'pluginOptions' => ['allowClear' => true]
                 ]),
                 'value' => 'status'
             ],
-            //'creator_id',
-            //'modifier_id',
-            //'created_at',
-            //'updated_at',
-
+            'description',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
