@@ -9,25 +9,25 @@ use yii\widgets\DetailView;
  * @var $model common\models\person\Person
  */
 
-$this->title = $model->title;
+$this->title = $model->fullIdentity;
 $this->params['breadcrumbs'][] = ['label' => 'Shaxslar', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="person-view">
 
+    <p class="pull-right">
+        <?= HtmlHelper::editButton($model) ?>
+        <?= HtmlHelper::removeButton($model) ?>
+    </p>
+
     <h1><?= HtmlHelper::encode($this->title) ?></h1>
 
     <div class="row">
-        <div class="col-md-12">
-            <?= \frontend\widgets\MarriagesGridWidget::widget(['person' => $model])?>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <?= HtmlHelper::img('/images/no_photo.png', ['class' => 'img img-thumbnail']) ?>
-            <p class="text-right">
-                <?= HtmlHelper::editButton($model) ?>
-                <?= HtmlHelper::removeButton($model) ?>
-            </p>
+        </div>
+        <div class="col-md-3">
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -37,13 +37,27 @@ $this->params['breadcrumbs'][] = $this->title;
                     'surname',
                     'fathers_name',
                     'date_of_birth',
-                    'date_of_death',
+                    'date_of_death'
+                ]
+            ]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
                     'generation',
                     'description',
                     'gender',
                     'address',
                     'citizenship',
                     'parentMarriage.fullIdentity',
+                ],
+            ]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
                     'education',
                     'phone',
                     'profession',
@@ -54,7 +68,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]) ?>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= \frontend\widgets\MarriagesGridWidget::widget(['person' => $model]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
 
+        </div>
+        <div class="col-md-6">
+
+        </div>
     </div>
 
 </div>

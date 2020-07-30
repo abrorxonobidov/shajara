@@ -92,6 +92,7 @@ class Person extends LocalActiveRecord
             'citizenship_id' => 'Fuqaroligi',
             'citizenship' => 'Fuqaroligi',
             'parent_marriage_id' => 'Ota-onasi',
+            'parentMarriage.fullIdentity' => 'Ota-onasi',
             'education_id' => 'Ma’lumoti',
             'education' => 'Ma’lumoti',
             'phone' => 'Telefon',
@@ -160,6 +161,7 @@ class Person extends LocalActiveRecord
         return [
             1 => 'Xo‘ja',
             2 => 'Fuqaro',
+            3 => 'To‘ra',
         ];
     }
 
@@ -203,12 +205,13 @@ class Person extends LocalActiveRecord
             4 => 'O‘rta-maxsus (Kollej, akademik litsey)',
             5 => 'Oliy (Universitet, Institut)',
             6 => 'Avvalgi ta’lim (Madrasa, Diniy)',
+            7 => 'Texnikum',
         ];
     }
 
     public function getEducation()
     {
-        return self::getEducationList()[$this->education_id];
+        return @self::getEducationList()[$this->education_id];
     }
 
 
