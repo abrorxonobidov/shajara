@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\web\JsExpression;
 use kartik\select2\Select2;
+use kartik\date\DatePicker;
 
 /**
  * @var $this yii\web\View
@@ -74,10 +75,26 @@ use kartik\select2\Select2;
 
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'date_of_marriage')->textInput() ?>
+            <?= $form->field($model, 'date_of_marriage')
+                ->widget(DatePicker::class, [
+                    'type' => 3,
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'todayHighlight' => true,
+                        'autoclose' => true
+                    ]
+                ]) ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($model, 'date_of_divorce')->textInput() ?>
+            <?= $form->field($model, 'date_of_divorce')
+                ->widget(DatePicker::class, [
+                    'type' => 3,
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'todayHighlight' => true,
+                        'autoclose' => true
+                    ]
+                ]) ?>
         </div>
     </div>
 

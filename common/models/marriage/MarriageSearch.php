@@ -2,20 +2,29 @@
 
 namespace common\models\marriage;
 
+use common\models\person\Person;
 use yii\data\ActiveDataProvider;
 
 /**
  * MarriageSearch represents the model behind the search form of `common\models\marriage\Marriage`.
+ *
+ * @property string $identity_search_id
+ *
+ * @property Person $person
  */
 class MarriageSearch extends Marriage
 {
+
+
+    public $identity_search_id;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'husband_id', 'wife_id', 'order_husband', 'order_wife', 'status_id', 'creator_id', 'modifier_id'], 'integer'],
+            [['id', 'husband_id', 'wife_id', 'order_husband', 'order_wife', 'status_id', 'creator_id', 'modifier_id', 'identity_search_id'], 'integer'],
             [['date_of_marriage', 'date_of_divorce', 'description', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -36,6 +45,11 @@ class MarriageSearch extends Marriage
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
+            ]
         ]);
 
         $this->load($params);
@@ -47,23 +61,37 @@ class MarriageSearch extends Marriage
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'husband_id' => $this->husband_id,
-            'wife_id' => $this->wife_id,
-            'date_of_marriage' => $this->date_of_marriage,
-            'date_of_divorce' => $this->date_of_divorce,
-            'order_husband' => $this->order_husband,
-            'order_wife' => $this->order_wife,
-            'status_id' => $this->status_id,
-            'creator_id' => $this->creator_id,
-            'modifier_id' => $this->modifier_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+        $query
+            ->andFilterWhere([
+                'id' => $this->id,
+                'husband_id' => $this->husband_id,
+                'wife_id' => $this->wife_id,
+                'date_of_marriage' => $this->date_of_marriage,
+                'date_of_divorce' => $this->date_of_divorce,
+                'order_husband' => $this->order_husband,
+                'order_wife' => $this->order_wife,
+                'status_id' => $this->status_id,
+                'creator_id' => $this->creator_id,
+                'modifier_id' => $this->modifier_id,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+            ])
+            ->andFilterWhere([
+                'or',
+                ['husband_id' => $this->identity_search_id],
+                ['wife_id' => $this->identity_search_id],
+            ]);
 
         $query->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPerson()
+    {
+        return $this->hasOne(Person::class, ['id' => 'identity_search_id']);
     }
 }

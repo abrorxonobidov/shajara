@@ -6,6 +6,7 @@ use common\models\person\Person;
 use Yii;
 use common\models\marriage\Marriage;
 use common\models\marriage\MarriageSearch;
+use yii\filters\AjaxFilter;
 use yii\filters\ContentNegotiator;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -34,15 +35,15 @@ class MarriageController extends Controller
 
         $behaviour[] = [
             'class' => ContentNegotiator::class,
-            'only' => ['get-person'],  // in a controller
+            'only' => ['get-person'],
             'formats' => ['application/json' => Response::FORMAT_JSON]
         ];
 
-        //$behaviour[] = [
-        //    'class' => AjaxFilter::class,
-        //    'only' => ['get-person'],
-        //    'errorMessage' => 'Sahifa topilmadi'
-        //];
+        $behaviour[] = [
+            'class' => AjaxFilter::class,
+            'only' => ['get-person'],
+            'errorMessage' => 'Sahifa topilmadi'
+        ];
 
         return $behaviour;
     }
@@ -149,7 +150,7 @@ class MarriageController extends Controller
      * @param integer $gender_id
      * @return mixed
      */
-    public function actionGetPerson($text, $gender_id = 1)
+    public function actionGetPerson($text, $gender_id = null)
     {
         if ($text === false) return Json::encode(['results' => ['id' => '', 'text' => '']]);
 
@@ -158,13 +159,8 @@ class MarriageController extends Controller
                 'id',
                 'text' => "CONCAT(surname, ' ', name, ' ', fathers_name, ' (', title, ')')"
             ])
-            ->where(['OR',
-                ['like', 'title', $text],
-                ['like', 'name', $text],
-                ['like', 'surname', $text],
-                ['like', 'fathers_name', $text]
-            ])
-            ->andWhere(['gender_id' => $gender_id])
+            ->where(['like', "CONCAT(surname, name, fathers_name, '(', title, ')')", str_replace(' ', '', $text)])
+            ->andFilterWhere(['gender_id' => $gender_id])
             ->asArray()
             ->all();
         return ['results' => $authorities];

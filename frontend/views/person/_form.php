@@ -30,6 +30,7 @@ use kartik\select2\Select2;
             'type' => 3,
             'pluginOptions' => [
                 'format' => 'yyyy-mm-dd',
+                'autoclose' => true,
                 'todayHighlight' => true
             ]
         ]) ?>
@@ -38,6 +39,7 @@ use kartik\select2\Select2;
         ->widget(DatePicker::class, [
             'type' => 3,
             'pluginOptions' => [
+                'autoclose' => true,
                 'format' => 'yyyy-mm-dd',
                 'todayHighlight' => true
             ]

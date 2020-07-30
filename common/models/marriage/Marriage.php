@@ -76,7 +76,7 @@ class Marriage extends LocalActiveRecord
                 'order_husband' => 'Erning nikohi tartibi',
                 'order_wife' => 'Xotinning nikohi tartibi',
                 'description' => 'Izoh',
-                'status_id' => 'Status ID',
+                'status_id' => 'Status',
                 'status' => 'Status',
             ]);
     }
