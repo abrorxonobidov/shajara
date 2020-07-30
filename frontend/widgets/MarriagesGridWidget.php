@@ -13,6 +13,7 @@ use yii\base\Widget;
 use common\models\marriage\Marriage;
 use common\models\person\Person;
 use kartik\grid\GridView;
+use yii\data\ArrayDataProvider;
 
 /**
  * Class MarriagesGridWidget
@@ -29,27 +30,29 @@ class MarriagesGridWidget extends Widget
         $person = $this->person;
 
         if ($person->gender_id == Person::GENDER_MALE) {
-            $label = 'Xotin';
-            $target = 'wife';
+            $attribute = 'wife';
             $order = 'husband';
         } else {
-            $label = 'Er';
+            $attribute = 'husband';
             $order = 'wife';
-            $target = 'husband';
         }
 
         $view = Html::tag('h3', 'Nikohlar va farzandlar');
 
         if (($marriages = $person->marriages) > null) {
             $view .= GridView::widget([
-                'dataProvider' => new \yii\data\ArrayDataProvider(['allModels' => $marriages]),
+                'dataProvider' => new ArrayDataProvider([
+                    'allModels' => $marriages,
+                    'sort' => false,
+                    'pagination' => ['pageSize' => 0]
+                ]),
                 'summary' => false,
                 'columns' => [
                     'order_' . $order,
                     [
-                        'label' => $label,
-                        'value' => function (Marriage $marriage) use ($person, $target) {
-                            $pair = $marriage->{$target};
+                        'attribute' => $attribute . '_id',
+                        'value' => function (Marriage $marriage) use ($person, $attribute) {
+                            $pair = $marriage->{$attribute};
                             /** @var $pair Person */
                             return Html::a($pair->fullIdentity, ['person/view', 'id' => $pair->id], ['title' => 'Shaxsni ko‘rish', 'target' => '_blank']);
                         },
@@ -66,50 +69,44 @@ class MarriagesGridWidget extends Widget
                     ],
                     [
                         'class' => 'kartik\grid\ExpandRowColumn',
-                        'allowBatchToggle' => false,
-                        'detailAnimationDuration' => 0,
-                        'value' => function () {
-                            return GridView::ROW_EXPANDED;
-                        },
                         'detail' => function (Marriage $marriage) {
                             $description = $marriage->description ? '<b>Izoh</b>: ' . Html::tag('p', $marriage->description) : '';
-                            if (($childrenModels = $marriage->children) !== null) {
-                                $description .= '<p><b>Farzandlar:</b> ' . Html::tag('span', count($childrenModels), ['class' => 'badge']) . '</p>'
-                                    . GridView::widget([
-                                        'summary' => false,
-                                        'dataProvider' => new \yii\data\ArrayDataProvider([
-                                            'allModels' => $marriage->children,
-                                            'sort' => [
-                                                'attributes' => ['date_of_birth', 'date_of_death', 'generation', 'gender'],
-                                                'defaultOrder' => ['date_of_birth' => SORT_ASC]
-                                            ],
-                                            'pagination' => ['pageSize' => 0]
-                                        ]),
-                                        'columns' => [
-                                            ['class' => 'yii\grid\SerialColumn', 'header' => 'T/r'],
-                                            [
-                                                'attribute' => 'fullIdentity',
-                                                'value' => function (Person $person) {
-                                                    return Html::a($person->fullIdentity, ['person/view', 'id' => $person->id], ['target' => '_blank']);
-                                                },
-                                                'format' => 'raw'
-                                            ],
-                                            'date_of_birth',
-                                            'date_of_death',
-                                            'generation',
-                                            'gender',
-                                        ]
-                                    ]);
+                            $childrenModels = $marriage->children;
+                            $description .= '<p><b>Farzandlar:</b> ' . Html::tag('span', count($childrenModels), ['class' => 'badge']) . '</p>';
+                            if (count($childrenModels) > 0) {
+                                $description .= GridView::widget([
+                                    'summary' => false,
+                                    'dataProvider' => new ArrayDataProvider([
+                                        'allModels' => $childrenModels,
+                                        'sort' => false,
+                                        'pagination' => ['pageSize' => 0]
+                                    ]),
+                                    'columns' => [
+                                        ['class' => 'yii\grid\SerialColumn', 'header' => 'T/r'],
+                                        [
+                                            'attribute' => 'fullIdentity',
+                                            'value' => function (Person $person) {
+                                                return Html::a($person->fullIdentity, ['person/view', 'id' => $person->id], ['target' => '_blank']);
+                                            },
+                                            'format' => 'raw'
+                                        ],
+                                        'date_of_birth',
+                                        'date_of_death',
+                                        'generation',
+                                        'gender',
+                                    ]
+                                ]);
                             };
                             return $description;
                         },
-                        'headerOptions' => ['class' => 'kartik-sheet-style'],
-                        'expandOneOnly' => false,
+                        'detailAnimationDuration' => 0,
+                        'value' => function () {
+                            return GridView::ROW_COLLAPSED;
+                        },
                         'expandTitle' => 'Ochish',
                         'collapseTitle' => 'Yopish',
                         'expandAllTitle' => 'Barchasini ochish',
                         'collapseAllTitle' => 'Barchasini yopish',
-                        'enableRowClick' => true,
                     ],
                 ]
             ]);

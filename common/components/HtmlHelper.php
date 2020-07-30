@@ -42,4 +42,15 @@ class HtmlHelper extends Html
     {
         return Html::a(Html::icon('pencil'), [$link, 'id' => $model->id], ['class' => 'btn btn-primary', 'title' => 'Tahrirlash']);
     }
+
+
+    /**
+     * @param $title string
+     * @param $link string
+     * @return string
+     */
+    public static function createButton($title = 'Hosil qilish', $link = 'create')
+    {
+        return Html::a(Html::icon('plus'), [$link], ['class' => 'btn btn-success', 'title' => $title, 'target' => '_blank']);
+    }
 }

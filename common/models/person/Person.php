@@ -218,9 +218,9 @@ class Person extends LocalActiveRecord
     public function getFullIdentity()
     {
         $data = [
-            $this->surname,
-            $this->name,
-            $this->fathers_name,
+            $this->surname ? $this->surname : '-',
+            $this->name ? $this->name : '-',
+            $this->fathers_name ? $this->fathers_name : '-',
         ];
         return implode(' ', $data) . " ({$this->title})";
     }

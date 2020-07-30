@@ -159,7 +159,7 @@ class MarriageController extends Controller
                 'id',
                 'text' => "CONCAT(surname, ' ', name, ' ', fathers_name, ' (', title, ')')"
             ])
-            ->where(['like', "CONCAT(surname, name, fathers_name, '(', title, ')')", str_replace(' ', '', $text)])
+            ->where(['like', "CONCAT(surname, name, fathers_name, '(', REPLACE(title, ' ', ''), ')')", str_replace([' ', '-'], '', $text)])
             ->andFilterWhere(['gender_id' => $gender_id])
             ->asArray()
             ->all();

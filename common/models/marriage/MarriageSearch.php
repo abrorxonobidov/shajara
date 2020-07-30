@@ -80,14 +80,21 @@ class MarriageSearch extends Marriage
 
         if ($this->date_of_marriage)
             $query
-                ->andFilterWhere(['>=', 'm.date_of_marriage', date("Y-m-d", strtotime(substr($this->date_of_marriage, 0, 10)))])
-                ->andFilterWhere(['<', 'm.date_of_marriage', date("Y-m-d", strtotime(substr($this->date_of_marriage, 13, 10) . ' + 1 day'))]);
+                ->andWhere([
+                    'between',
+                    'm.date_of_marriage',
+                    date("Y-m-d", strtotime(substr($this->date_of_marriage, 0, 10))),
+                    date("Y-m-d", strtotime(substr($this->date_of_marriage, 13, 10)))
+                ]);
 
         if ($this->date_of_divorce)
             $query
-                ->andFilterWhere(['>=', 'm.date_of_divorce', date("Y-m-d", strtotime(substr($this->date_of_divorce, 0, 10)))])
-                ->andFilterWhere(['<', 'm.date_of_divorce', date("Y-m-d", strtotime(substr($this->date_of_divorce, 13, 10) . ' + 1 day'))]);
-
+                ->andWhere([
+                    'between',
+                    'm.date_of_divorce',
+                    date("Y-m-d", strtotime(substr($this->date_of_divorce, 0, 10))),
+                    date("Y-m-d", strtotime(substr($this->date_of_divorce, 13, 10)))
+                ]);
 
         return $dataProvider;
     }

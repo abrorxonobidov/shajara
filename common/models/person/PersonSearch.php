@@ -7,17 +7,23 @@ use yii\data\ActiveDataProvider;
 
 /**
  * PersonSearch represents the model behind the search form of `common\models\person\Person`.
+ *
+ * @property string fullIdentity
  */
 class PersonSearch extends Person
 {
+
+
+    public $fullIdentity;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'generation_id', 'gender_id', 'parent_marriage_id', 'citizenship_id', 'education_id', 'creator_id', 'modifier_id'], 'integer'],
-            [['title', 'name', 'surname', 'fathers_name', 'date_of_birth', 'date_of_death', 'description', 'address', 'phone', 'profession', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'generation_id', 'gender_id'], 'integer'],
+            [['fullIdentity', 'date_of_birth', 'date_of_death', 'address'], 'safe'],
         ];
     }
 
@@ -41,8 +47,6 @@ class PersonSearch extends Person
     {
         $query = Person::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -52,38 +56,42 @@ class PersonSearch extends Person
             ]
         ]);
 
+        $dataProvider->sort->attributes['fullIdentity'] = [
+            'asc' => ['surname' => SORT_ASC, 'name' => SORT_ASC, 'fathers_name' => SORT_ASC, 'title' => SORT_ASC],
+            'desc' => ['surname' => SORT_DESC, 'name' => SORT_DESC, 'fathers_name' => SORT_DESC, 'title' => SORT_DESC]
+        ];
+
         $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
+        if (!$this->validate()) return $dataProvider;
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'date_of_birth' => $this->date_of_birth,
-            'date_of_death' => $this->date_of_death,
             'generation_id' => $this->generation_id,
             'gender_id' => $this->gender_id,
-            'parent_marriage_id' => $this->parent_marriage_id,
-            'citizenship_id' => $this->citizenship_id,
-            'education_id' => $this->education_id,
-            'creator_id' => $this->creator_id,
-            'modifier_id' => $this->modifier_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'surname', $this->surname])
-            ->andFilterWhere(['like', 'fathers_name', $this->fathers_name])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'profession', $this->profession]);
+        $query
+            ->andFilterWhere(['like', "CONCAT(surname, name, fathers_name, '(', REPLACE(title, ' ', ''), ')')", str_replace([' ', '-'], '', $this->fullIdentity)])
+            ->andFilterWhere(['like', 'address', $this->address]);
+
+        if ($this->date_of_birth)
+            $query
+                ->andWhere([
+                    'between',
+                    'date_of_birth',
+                    date("Y-m-d", strtotime(substr($this->date_of_birth, 0, 10))),
+                    date("Y-m-d", strtotime(substr($this->date_of_birth, 13, 10)))
+                ]);
+
+        if ($this->date_of_death)
+            $query
+                ->andWhere([
+                    'between',
+                    'date_of_death',
+                    date("Y-m-d", strtotime(substr($this->date_of_death, 0, 10))),
+                    date("Y-m-d", strtotime(substr($this->date_of_death, 13, 10)))
+                ]);
 
         return $dataProvider;
     }

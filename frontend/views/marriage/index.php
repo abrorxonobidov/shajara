@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 use kartik\daterange\DateRangePicker;
+use common\components\HtmlHelper;
 
 /**
  * @var $this yii\web\View
@@ -19,11 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="marriage-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <p class="pull-right"> <?= HtmlHelper::createButton('Nikoh kiritish') ?> </p>
 
-    <p>
-        <?= Html::a(Html::icon('plus'), ['create'], ['class' => 'btn btn-success', 'title' => 'Nikoh yaratish']) ?>
-    </p>
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <? Pjax::begin(); ?>
 
@@ -111,7 +110,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'status'
             ],
             'description',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => Html::a(Html::icon('refresh'), ['index'], ['title' => 'Filtrni tozalash']),
+            ],
         ],
     ]); ?>
 

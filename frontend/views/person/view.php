@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="person-view">
 
     <p class="pull-right">
+        <?= HtmlHelper::createButton() ?>
         <?= HtmlHelper::editButton($model) ?>
         <?= HtmlHelper::removeButton($model) ?>
     </p>

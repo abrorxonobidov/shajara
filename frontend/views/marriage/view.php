@@ -2,13 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\components\HtmlHelper;
 
 /**
  * @var $this yii\web\View
  * @var $model common\models\marriage\Marriage
  */
 
-$this->title = $model->id;
+$this->title = $model->fullIdentity;
 $this->params['breadcrumbs'][] = ['label' => 'Nikohlar', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -17,15 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Tahrirlash', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('O‘chirish', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Siz rostdan ham ushbu elementni o‘chirmoqchimisiz?',
-                'method' => 'post',
-            ],
-        ]) ?>
+    <p class="pull-right">
+        <?= HtmlHelper::createButton() ?>
+        <?= HtmlHelper::editButton($model) ?>
+        <?= HtmlHelper::removeButton($model) ?>
     </p>
 
     <?= DetailView::widget([
