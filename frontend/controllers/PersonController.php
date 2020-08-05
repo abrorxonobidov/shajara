@@ -9,7 +9,6 @@ use common\models\person\PersonSearch;
 use yii\filters\AjaxFilter;
 use yii\filters\ContentNegotiator;
 use yii\helpers\Json;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +16,7 @@ use yii\web\Response;
 /**
  * PersonController implements the CRUD actions for Person model.
  */
-class PersonController extends Controller
+class PersonController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -25,17 +24,19 @@ class PersonController extends Controller
     public function behaviors()
     {
         $behaviour = parent::behaviors();
+
         $behaviour['verbs'] = [
             'class' => VerbFilter::class,
             'actions' => [
                 'delete' => ['POST'],
             ]
         ];
-        //$behaviour[] = [
-        //    'class' => AjaxFilter::class,
-        //    'only' => ['get-marriage'],
-        //    'errorMessage' => 'Sahifa topilmadi'
-        //];
+
+        $behaviour[] = [
+            'class' => AjaxFilter::class,
+            'only' => ['get-marriage'],
+            'errorMessage' => 'Sahifa topilmadi'
+        ];
 
         $behaviour[] = [
             'class' => ContentNegotiator::class,
@@ -117,7 +118,7 @@ class PersonController extends Controller
      * @param $id
      * @return \yii\web\Response
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws mixed
      * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id) //todo make is_deleted = true

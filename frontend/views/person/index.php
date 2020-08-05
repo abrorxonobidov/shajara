@@ -6,6 +6,7 @@ use kartik\daterange\DateRangePicker;
 use kartik\select2\Select2;
 use common\components\HtmlHelper;
 use yii\widgets\Pjax;
+use yii\web\JsExpression;
 
 /**
  * @var $this yii\web\View
@@ -46,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowClear' => true
                     ],
                 ]),
+                'contentOptions' => ['class' => 'col-md-2']
             ],
             [
                 'attribute' => 'date_of_death',
@@ -61,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowClear' => true
                     ],
                 ]),
+                'contentOptions' => ['class' => 'col-md-2']
             ],
             [
                 'attribute' => 'generation_id',
@@ -69,9 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                     'attribute' => 'generation_id',
                     'data' => $searchModel::getGenerationList(),
-                    'options' => ['prompt' => 'Naslni tanlang'],
+                    'options' => ['prompt' => '...'],
                     'pluginOptions' => ['allowClear' => true]
                 ]),
+                'contentOptions' => ['class' => 'col-md-1']
             ],
             [
                 'attribute' => 'gender_id',
@@ -80,16 +84,49 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                     'attribute' => 'gender_id',
                     'data' => $searchModel::getGenderList(),
-                    'options' => ['prompt' => 'Jinsni tanlang'],
+                    'options' => ['prompt' => '...'],
                     'pluginOptions' => ['allowClear' => true]
                 ]),
+                'contentOptions' => ['class' => 'col-md-1']
+            ],
+            [
+                'attribute' => 'parent_marriage_id',
+                'value' => function ($person) {
+                        /** @var $person \common\models\person\Person*/
+                        return $person->parent_marriage_id ?
+                            Html::a($person->parentMarriage->fullIdentity, ['marriage/view', 'id' => $person->parent_marriage_id], ['target' => "_blank"])
+                            : null;
+                    },
+                'format' => 'raw',
+                'filter' => Select2::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'parent_marriage_id',
+                    'initValueText' => empty($searchModel->parent_marriage_id) ? '' : $searchModel->parentMarriage->fullIdentity,
+                    'options' => ['placeholder' => 'Ota-onani tanlang'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'minimumInputLength' => 3,
+                        'language' => [
+                            'errorLoading' => new JsExpression("() => { return 'Yuklanmoqda...'; }"),
+                        ],
+                        'ajax' => [
+                            'url' => '/person/get-marriage',
+                            'dataType' => 'json',
+                            'data' => new JsExpression('(params) => { return {text:params.term, id:null}; }')
+                        ],
+                        'escapeMarkup' => new JsExpression('(markup) => { return markup; }'),
+                        'templateResult' => new JsExpression('(marriage) => { return marriage.text; }'),
+                        'templateSelection' => new JsExpression('(marriage) => { return (marriage.text.length > 30) ?  marriage.text.substring(0, 30) + " ..." : marriage.text;}'),
+                    ]
+                ]),
+                'contentOptions' => ['class' => 'col-md-2']
             ],
             'address',
             [
                 'class' => 'yii\grid\ActionColumn',
-                'header' => Html::a(Html::icon('refresh'), ['index'], ['title' => 'Filtrni tozalash']),
-            ],
-        ],
+                'header' => Html::a(Html::icon('refresh'), ['index'], ['title' => 'Filtrni tozalash'])
+            ]
+        ]
     ]); ?>
 
     <? Pjax::end(); ?>

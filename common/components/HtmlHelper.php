@@ -47,10 +47,11 @@ class HtmlHelper extends Html
     /**
      * @param $title string
      * @param $link string
+     * @param $target string
      * @return string
      */
-    public static function createButton($title = 'Hosil qilish', $link = 'create')
+    public static function createButton($title = 'Hosil qilish', $link = 'create', $target = '_blank')
     {
-        return Html::a(Html::icon('plus'), [$link], ['class' => 'btn btn-success', 'title' => $title, 'target' => '_blank']);
+        return Html::a(Html::icon('plus'), [$link], ['class' => 'btn btn-success', 'title' => $title, 'target' => $target]);
     }
 }

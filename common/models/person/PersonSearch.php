@@ -22,7 +22,7 @@ class PersonSearch extends Person
     public function rules()
     {
         return [
-            [['id', 'generation_id', 'gender_id'], 'integer'],
+            [['id', 'generation_id', 'gender_id', 'parent_marriage_id'], 'integer'],
             [['fullIdentity', 'date_of_birth', 'date_of_death', 'address'], 'safe'],
         ];
     }
@@ -69,6 +69,7 @@ class PersonSearch extends Person
             'id' => $this->id,
             'generation_id' => $this->generation_id,
             'gender_id' => $this->gender_id,
+            'parent_marriage_id' => $this->parent_marriage_id
         ]);
 
         $query

@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\components\HtmlHelper;
 
@@ -16,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="marriage-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= HtmlHelper::encode($this->title) ?></h1>
 
     <p class="pull-right">
         <?= HtmlHelper::createButton() ?>
@@ -28,8 +27,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'husband.fullIdentity',
-            'wife.fullIdentity',
+            [
+                'attribute' => 'husband.fullIdentity',
+                'value' => HtmlHelper::a($model->husband->fullIdentity, ['person/view', 'id' => $model->husband_id]),
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'wife.fullIdentity',
+                'value' => HtmlHelper::a($model->wife->fullIdentity, ['person/view', 'id' => $model->wife_id]),
+                'format' => 'raw'
+            ],
             'date_of_marriage',
             'date_of_divorce',
             'order_husband',

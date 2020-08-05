@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="person-view">
 
     <p class="pull-right">
-        <?= HtmlHelper::createButton() ?>
+        <?= HtmlHelper::createButton('Hosil qilish', 'create', '') ?>
         <?= HtmlHelper::editButton($model) ?>
         <?= HtmlHelper::removeButton($model) ?>
     </p>
@@ -51,8 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'gender',
                     'address',
                     'citizenship',
-                    'parentMarriage.fullIdentity',
-                ],
+                    [
+                        'attribute' => 'parentMarriage.fullIdentity',
+                        'value' => $model->parent_marriage_id ? HtmlHelper::a($model->parentMarriage->fullIdentity, ['marriage/view', 'id' => $model->parent_marriage_id]) : null,
+                        'format' => 'html'
+                    ]
+                ]
             ]) ?>
         </div>
         <div class="col-md-3">
@@ -65,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'creator.nameAndSurname',
                     'created_at',
                     'modifier.nameAndSurname',
-                    'updated_at',
-                ],
+                    'updated_at'
+                ]
             ]) ?>
         </div>
     </div>
@@ -75,13 +79,4 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= \frontend\widgets\MarriagesGridWidget::widget(['person' => $model]) ?>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-
-        </div>
-        <div class="col-md-6">
-
-        </div>
-    </div>
-
 </div>

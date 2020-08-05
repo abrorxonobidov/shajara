@@ -14,7 +14,7 @@ return [
         ],
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
-            'nullDisplay' => '-',
+            'nullDisplay' => '_',
         ],
     ],
     'timeZone' => 'Asia/Tashkent'

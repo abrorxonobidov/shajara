@@ -9,7 +9,6 @@ use common\models\marriage\MarriageSearch;
 use yii\filters\AjaxFilter;
 use yii\filters\ContentNegotiator;
 use yii\helpers\Json;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -17,7 +16,7 @@ use yii\web\Response;
 /**
  * MarriageController implements the CRUD actions for Marriage model.
  */
-class MarriageController extends Controller
+class MarriageController extends BaseController
 {
     /**
      * {@inheritdoc}

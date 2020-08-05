@@ -43,7 +43,10 @@ class MarriagesGridWidget extends Widget
             $view .= GridView::widget([
                 'dataProvider' => new ArrayDataProvider([
                     'allModels' => $marriages,
-                    'sort' => false,
+                    'sort' => [
+                        'defaultOrder' => ['order_' . $order => SORT_ASC],
+                        'attributes' => ['order_' . $order]
+                    ],
                     'pagination' => ['pageSize' => 0]
                 ]),
                 'summary' => false,
@@ -78,7 +81,10 @@ class MarriagesGridWidget extends Widget
                                     'summary' => false,
                                     'dataProvider' => new ArrayDataProvider([
                                         'allModels' => $childrenModels,
-                                        'sort' => false,
+                                        'sort' => [
+                                            'defaultOrder' => ['date_of_birth' => SORT_ASC],
+                                            'attributes' => ['date_of_birth']
+                                        ],
                                         'pagination' => ['pageSize' => 0]
                                     ]),
                                     'columns' => [

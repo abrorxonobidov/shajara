@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 use yii\web\JsExpression;
@@ -17,41 +17,69 @@ use kartik\select2\Select2;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-md-3">
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'fathers_name')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <div class="row">
 
-    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
+        <div class="col-md-3">
+            <?= $form->field($model, 'generation_id')->dropDownList($model::getGenerationList(), ['prompt' => 'Naslni tanlang']) ?>
+        </div>
 
-    <?= $form->field($model, 'fathers_name')->textInput(['maxlength' => true]) ?>
+        <div class="col-md-3">
+            <?= $form->field($model, 'gender_id')->dropDownList($model::getGenderList(), ['prompt' => 'Jinsni tanlang']) ?>
+        </div>
 
-    <?= $form->field($model, 'date_of_birth')
-        ->widget(DatePicker::class, [
-            'type' => 3,
-            'pluginOptions' => [
-                'format' => 'yyyy-mm-dd',
-                'autoclose' => true,
-                'todayHighlight' => true
-            ]
-        ]) ?>
+        <div class="col-md-3">
+            <?= $form->field($model, 'date_of_birth')
+                ->widget(DatePicker::class, [
+                    'type' => 3,
+                    'pluginOptions' => [
+                        'format' => 'yyyy-mm-dd',
+                        'autoclose' => true,
+                        'todayHighlight' => true
+                    ],
+                    'layout' => '{input}{remove}{picker}' .
+                        Html::tag('span', Html::icon('alert'), [
+                            'class' => 'input-group-addon',
+                            'role' => 'button',
+                            'data-toggle' => 'collapse',
+                            'href' => '#collapse_date_of_death',
+                            'aria-expanded' => 'false',
+                            'aria-controls' => 'collapse_date_of_death',
+                            'title' => $model->getAttributeLabel('date_of_death')
+                        ]),
+                ]) ?>
+        </div>
 
-    <?= $form->field($model, 'date_of_death')
-        ->widget(DatePicker::class, [
-            'type' => 3,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'yyyy-mm-dd',
-                'todayHighlight' => true
-            ]
-        ]) ?>
+        <div class="col-md-3">
+            <div class="collapse" id="collapse_date_of_death">
+                <?= $form->field($model, 'date_of_death')
+                    ->widget(DatePicker::class, [
+                        'type' => 3,
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                            'todayHighlight' => true
+                        ]
+                    ]) ?>
+            </div>
+        </div>
 
-    <?= $form->field($model, 'generation_id')->dropDownList($model::getGenerationList(), ['prompt' => 'Naslni tanlang']) ?>
+    </div>
 
-    <?= $form->field($model, 'gender_id')->dropDownList($model::getGenderList(), ['prompt' => 'Jinsni tanlang']) ?>
-
-    <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'citizenship_id')->dropDownList($model::getCitizenshipList()) ?>
 
     <?= $form->field($model, 'parent_marriage_id')
         ->widget(Select2::class, [
@@ -63,7 +91,7 @@ use kartik\select2\Select2;
                     'errorLoading' => new JsExpression("() => { return 'Yuklanmoqda...'; }"),
                 ],
                 'ajax' => [
-                    'url' => 'get-marriage',
+                    'url' => '/person/get-marriage',
                     'dataType' => 'json',
                     'data' => new JsExpression('(params) => { return {text:params.term, id:null}; }')
                 ],
@@ -74,13 +102,27 @@ use kartik\select2\Select2;
         ])
     ?>
 
-    <?= $form->field($model, 'education_id')->dropDownList($model::getEducationList(), ['prompt' => 'Ma’lumotini tanlang']) ?>
 
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-md-3">
+            <?= $form->field($model, 'education_id')->dropDownList($model::getEducationList(), ['prompt' => 'Ma’lumotini tanlang']) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'profession')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'citizenship_id')->dropDownList($model::getCitizenshipList()) ?>
+        </div>
 
-    <?= $form->field($model, 'profession')->textInput(['maxlength' => true]) ?>
+    </div>
 
     <?= $form->field($model, 'description')->textarea(['maxlength' => true, 'rows' => 6, 'placeholder' => 'Eng muhim ma’lumotlarni qisqa shaklda qoldiring ...']) ?>
+
+    <? //= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+
 
     <div class="form-group">
         <?= Html::submitButton('Saqlash', ['class' => 'btn btn-success']) ?>

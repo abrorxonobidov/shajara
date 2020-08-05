@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: User
+ * User: Abrorxon Obidov
  * Date: 22-Jul-20
  * Time: 23:58
  */
@@ -27,15 +27,16 @@ use common\widgets\Alert;
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Shaxslar', 'url' => ['/person/index']],
-        ['label' => 'Nikohlar', 'url' => ['/marriage/index']],
-        ['label' => 'Aloqa', 'url' => ['/site/contact']],
-    ];
+    $menuItems = [];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+        $menuItems[] = ['label' => 'Ro‘yxatdan o‘tish', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems = [
+            ['label' => 'Shaxslar', 'url' => ['/person/index']],
+            ['label' => 'Nikohlar', 'url' => ['/marriage/index']],
+            //['label' => 'Aloqa', 'url' => ['/site/contact']],
+        ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

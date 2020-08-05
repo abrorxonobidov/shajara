@@ -162,6 +162,7 @@ class Person extends LocalActiveRecord
             1 => 'Xo‘ja',
             2 => 'Fuqaro',
             3 => 'To‘ra',
+            4 => 'Mir (Mahsum)',
         ];
     }
 

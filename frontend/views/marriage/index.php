@@ -44,9 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                     'attribute' => 'identity_search_id',
                     'initValueText' => empty($searchModel->identity_search_id) ? '' : $searchModel->person->fullIdentity,
-                    'options' => [
-                        'placeholder' => 'Shaxs F.I.Sh',
-                    ],
+                    'options' => ['placeholder' => 'Shaxs F.I.Sh'],
                     'pluginOptions' => [
                         'allowClear' => true,
                         'minimumInputLength' => 3,
